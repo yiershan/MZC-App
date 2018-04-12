@@ -1,39 +1,76 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
+import { IonicPage, MenuController, NavController, Platform } from 'ionic-angular';
+import {Storage} from "@ionic/storage";
+import { TranslateService } from '@ngx-translate/core';
+import {MyConfig} from "../../providers/config/config";
+import {MainPage} from "../pages";
 
-import { MenuController, NavController, Slides } from 'ionic-angular';
+export interface Slide {
+  title: string;
+  description: string;
+  image: string;
+}
 
-import { Storage } from '@ionic/storage';
-
-import { TabsPage } from '../tabs-page/tabs-page';
-
+@IonicPage()
 @Component({
   selector: 'page-tutorial',
   templateUrl: 'tutorial.html'
 })
-
 export class TutorialPage {
+  slides: Slide[];
   showSkip = true;
+  dir: string = 'ltr';
 
-	@ViewChild('slides') slides: Slides;
-
-  constructor(
-    public navCtrl: NavController,
-    public menu: MenuController,
-    public storage: Storage
-  ) { }
+  constructor(public navCtrl: NavController,
+              public menu: MenuController,
+              translate: TranslateService,
+              private storage: Storage,
+              public platform: Platform) {
+    this.dir = platform.dir();
+    /**
+     * 在处理这个内容获取时，当考虑到本地化因素，要支持多国通用语言，那这样处理自然很好，但是每次更新需要更新app。
+     * 如果不考虑本地化因素，只支持一种语言，那么换种方式是很不错的，slides的内容全部从后台获取。图片放在文件服务器上，这样每次
+     * 每次更新就不用更新app了
+     */
+    translate.get(["TUTORIAL_SLIDE1_TITLE",
+      "TUTORIAL_SLIDE1_DESCRIPTION",
+      "TUTORIAL_SLIDE2_TITLE",
+      "TUTORIAL_SLIDE2_DESCRIPTION",
+      "TUTORIAL_SLIDE3_TITLE",
+      "TUTORIAL_SLIDE3_DESCRIPTION",
+    ]).subscribe(
+      (values) => {
+        this.slides = [
+          {
+            title: values.TUTORIAL_SLIDE1_TITLE,
+            description: values.TUTORIAL_SLIDE1_DESCRIPTION,
+            image: 'assets/img/ica-slidebox-img-1.png',
+          },
+          {
+            title: values.TUTORIAL_SLIDE2_TITLE,
+            description: values.TUTORIAL_SLIDE2_DESCRIPTION,
+            image: 'assets/img/ica-slidebox-img-2.png',
+          },
+          {
+            title: values.TUTORIAL_SLIDE3_TITLE,
+            description: values.TUTORIAL_SLIDE3_DESCRIPTION,
+            image: 'assets/img/ica-slidebox-img-3.png',
+          }
+        ];
+      });
+  }
 
   startApp() {
-    this.navCtrl.push(TabsPage).then(() => {
-      this.storage.set('hasSeenTutorial', 'true');
-    })
+    // 结束观看，我们设置下已观看,key的名称需要每次修改后更改。
+    this.storage.set(MyConfig.TUTORIAL_SHOW,true);
+    this.navCtrl.setRoot('MainPage', {}, {
+      animate: true,
+      direction: 'forward'
+    });
   }
 
-  onSlideChangeStart(slider: Slides) {
+  onSlideChangeStart(slider) {
     this.showSkip = !slider.isEnd();
-  }
-
-  ionViewWillEnter() {
-    this.slides.update();
   }
 
   ionViewDidEnter() {
@@ -41,7 +78,7 @@ export class TutorialPage {
     this.menu.enable(false);
   }
 
-  ionViewDidLeave() {
+  ionViewWillLeave() {
     // enable the root left menu when leaving the tutorial page
     this.menu.enable(true);
   }

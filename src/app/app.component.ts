@@ -1,169 +1,108 @@
 import { Component, ViewChild } from '@angular/core';
-
-import { Events, MenuController, Nav, Platform } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
+import { TranslateService } from '@ngx-translate/core';
+import { Config, Nav, Platform } from 'ionic-angular';
 
-import { Storage } from '@ionic/storage';
-
-import { AboutPage } from '../pages/about/about';
-import { AccountPage } from '../pages/account/account';
-import { LoginPage } from '../pages/login/login';
-import { MapPage } from '../pages/map/map';
-import { SignupPage } from '../pages/signup/signup';
-import { TabsPage } from '../pages/tabs-page/tabs-page';
-import { TutorialPage } from '../pages/tutorial/tutorial';
-import { SchedulePage } from '../pages/schedule/schedule';
-import { SpeakerListPage } from '../pages/speaker-list/speaker-list';
-import { SupportPage } from '../pages/support/support';
-
-import { ConferenceData } from '../providers/conference-data';
-import { UserData } from '../providers/user-data';
-
-export interface PageInterface {
-  title: string;
-  name: string;
-  component: any;
-  icon: string;
-  logsOut?: boolean;
-  index?: number;
-  tabName?: string;
-  tabComponent?: any;
-}
+import { FirstRunPage, MainPage } from '../pages/pages';
+import { Settings } from '../providers/providers';
+import {Storage} from "@ionic/storage";
+import {MyConfig} from "../providers/config/config";
 
 @Component({
-  templateUrl: 'app.template.html'
+  template: `<ion-menu [content]="content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Pages</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <ion-list>
+        <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+          {{p.title}}
+        </button>
+      </ion-list>
+    </ion-content>
+
+  </ion-menu>
+  <ion-nav #content [root]="rootPage"></ion-nav>`
 })
-export class ConferenceApp {
-  // the root nav is a child of the root app component
-  // @ViewChild(Nav) gets a reference to the app's root nav
+export class MyApp {
+  rootPage;
+
   @ViewChild(Nav) nav: Nav;
 
-  // List of pages that can be navigated to from the left menu
-  // the left menu only works after login
-  // the login page disables the left menu
-  appPages: PageInterface[] = [
-    { title: 'Schedule', name: 'TabsPage', component: TabsPage, tabComponent: SchedulePage, index: 0, icon: 'calendar' },
-    { title: 'Speakers', name: 'TabsPage', component: TabsPage, tabComponent: SpeakerListPage, index: 1, icon: 'contacts' },
-    { title: 'Map', name: 'TabsPage', component: TabsPage, tabComponent: MapPage, index: 2, icon: 'map' },
-    { title: 'About', name: 'TabsPage', component: TabsPage, tabComponent: AboutPage, index: 3, icon: 'information-circle' }
+  pages: any[] = [
+    // { title: 'Tutorial', component: 'TutorialPage' },
+    // { title: 'Welcome', component: 'WelcomePage' },
+    // { title: 'Tabs', component: 'TabsPage' },
+    // { title: 'Cards', component: 'CardsPage' },
+    // { title: 'Content', component: 'ContentPage' },
+    // { title: 'Login', component: 'LoginPage' },
+    // { title: 'Signup', component: 'SignupPage' },
+    // { title: 'Master Detail', component: 'ListMasterPage' },
+    // { title: 'Menu', component: 'MenuPage' },
+    // { title: 'Settings', component: 'SettingsPage' },
+    // { title: 'Search', component: 'SearchPage' }
   ];
-  loggedInPages: PageInterface[] = [
-    { title: 'Account', name: 'AccountPage', component: AccountPage, icon: 'person' },
-    { title: 'Support', name: 'SupportPage', component: SupportPage, icon: 'help' },
-    { title: 'Logout', name: 'TabsPage', component: TabsPage, icon: 'log-out', logsOut: true }
-  ];
-  loggedOutPages: PageInterface[] = [
-    { title: 'Login', name: 'LoginPage', component: LoginPage, icon: 'log-in' },
-    { title: 'Support', name: 'SupportPage', component: SupportPage, icon: 'help' },
-    { title: 'Signup', name: 'SignupPage', component: SignupPage, icon: 'person-add' }
-  ];
-  rootPage: any;
 
-  constructor(
-    public events: Events,
-    public userData: UserData,
-    public menu: MenuController,
-    public platform: Platform,
-    public confData: ConferenceData,
-    public storage: Storage,
-    public splashScreen: SplashScreen
-  ) {
-
-    // Check if the user has already seen the tutorial
-    this.storage.get('hasSeenTutorial')
-      .then((hasSeenTutorial) => {
-        if (hasSeenTutorial) {
-          this.rootPage = TabsPage;
-        } else {
-          this.rootPage = TutorialPage;
-        }
-        this.platformReady()
+  constructor(private translate: TranslateService,
+              platform: Platform,
+              settings: Settings,
+              private config: Config,
+              private storage: Storage,
+              private statusBar: StatusBar,
+              private splashScreen: SplashScreen) {
+    platform.ready().then(() => {
+      // 查看是否浏览过导航页
+      this.storage.get(MyConfig.TUTORIAL_SHOW).then( TUTORIAL_SHOW => {
+        this.rootPage = TUTORIAL_SHOW === true ? MainPage: FirstRunPage;
       });
-
-    // load the conference data
-    confData.load();
-
-    // decide which menu items should be hidden by current login status stored in local storage
-    this.userData.hasLoggedIn().then((hasLoggedIn) => {
-      this.enableMenu(hasLoggedIn === true);
-    });
-    this.enableMenu(true);
-
-    this.listenToLoginEvents();
-  }
-
-  openPage(page: PageInterface) {
-    let params = {};
-
-    // the nav component was found using @ViewChild(Nav)
-    // setRoot on the nav to remove previous pages and only have this page
-    // we wouldn't want the back button to show in this scenario
-    if (page.index) {
-      params = { tabIndex: page.index };
-    }
-
-    // If we are already on tabs just change the selected tab
-    // don't setRoot again, this maintains the history stack of the
-    // tabs even if changing them from the menu
-    if (this.nav.getActiveChildNavs().length && page.index != undefined) {
-      this.nav.getActiveChildNavs()[0].select(page.index);
-    } else {
-      // Set the root of the nav with params if it's a tab index
-      this.nav.setRoot(page.name, params).catch((err: any) => {
-        console.log(`Didn't set nav root: ${err}`);
-      });
-    }
-
-    if (page.logsOut === true) {
-      // Give the menu time to close before changing to logged out
-      this.userData.logout();
-    }
-  }
-
-  openTutorial() {
-    this.nav.setRoot(TutorialPage);
-  }
-
-  listenToLoginEvents() {
-    this.events.subscribe('user:login', () => {
-      this.enableMenu(true);
-    });
-
-    this.events.subscribe('user:signup', () => {
-      this.enableMenu(true);
-    });
-
-    this.events.subscribe('user:logout', () => {
-      this.enableMenu(false);
-    });
-  }
-
-  enableMenu(loggedIn: boolean) {
-    this.menu.enable(loggedIn, 'loggedInMenu');
-    this.menu.enable(!loggedIn, 'loggedOutMenu');
-  }
-
-  platformReady() {
-    // Call any initial plugins when ready
-    this.platform.ready().then(() => {
+      // Okay, so the platform is ready and our plugins are available.
+      // 平台加载完毕， 插件可用
+      // Here you can do any higher level native things you might need.
+      // 现在可以做一些你需要的高级操作
+      this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
+    this.initTranslate();
   }
 
-  isActive(page: PageInterface) {
-    let childNav = this.nav.getActiveChildNavs()[0];
+  /**
+   * 根据浏览器语言设置本地化语言
+   * \assets\i18n
+   */
+  initTranslate() {
+    // Set the default language for translation strings, and the current language.
+    this.translate.setDefaultLang('zh-cmn-Hans');
+    const browserLang = this.translate.getBrowserLang();
 
-    // Tabs are a special case because they have their own navigation
-    if (childNav) {
-      if (childNav.getSelected() && childNav.getSelected().root === page.tabComponent) {
-        return 'primary';
+    if (browserLang) {
+      if (browserLang === 'zh') {
+        this.translate.use('zh-cmn-Hans'); // 繁体字也不用
+        // const browserCultureLang = this.translate.getBrowserCultureLang();
+        //
+        // if (browserCultureLang.match(/-CN|CHS|Hans/i)) {
+        //   this.translate.use('zh-cmn-Hans');
+        // } else if (browserCultureLang.match(/-TW|CHT|Hant/i)) {
+        //   this.translate.use('zh-cmn-Hant');
+        // }
+      } else { // 不是中文设置成英文挺好，省的改太多
+        this.translate.use('en');
       }
-      return;
+    } else {
+      this.translate.use('zh-cmn-Hans'); // Set your language here 默认语言
     }
 
-    if (this.nav.getActive() && this.nav.getActive().name === page.name) {
-      return 'primary';
-    }
-    return;
+    this.translate.get(['BACK_BUTTON_TEXT']).subscribe(values => {
+      this.config.set('ios', 'backButtonText', values.BACK_BUTTON_TEXT);
+    });
+  }
+
+  openPage(page) {
+    // Reset the content nav to have just this page
+    // we wouldn't want the back button to show in this scenario
+    this.nav.setRoot(page.component);
   }
 }

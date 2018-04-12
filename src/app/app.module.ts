@@ -1,99 +1,71 @@
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpModule } from '@angular/http';
-import { NgModule, ErrorHandler } from '@angular/core';
-
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-
-import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { Camera } from '@ionic-native/camera';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
+import { IonicStorageModule, Storage } from '@ionic/storage';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
-import { IonicStorageModule } from '@ionic/storage';
+import { Items } from '../mocks/providers/items';
+import { User, BlogApi, Api, Settings } from '../providers/providers';
+import { MyApp } from './app.component';
 
-import { ConferenceApp } from './app.component';
+// The translate loader needs to know where to load i18n files
+// in Ionic's static asset pipeline.
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
-import { AboutPage } from '../pages/about/about';
-import { PopoverPage } from '../pages/about-popover/about-popover';
-import { AccountPage } from '../pages/account/account';
-import { LoginPage } from '../pages/login/login';
-import { MapPage } from '../pages/map/map';
-import { SchedulePage } from '../pages/schedule/schedule';
-import { ScheduleFilterPage } from '../pages/schedule-filter/schedule-filter';
-import { SessionDetailPage } from '../pages/session-detail/session-detail';
-import { SignupPage } from '../pages/signup/signup';
-import { SpeakerDetailPage } from '../pages/speaker-detail/speaker-detail';
-import { SpeakerListPage } from '../pages/speaker-list/speaker-list';
-import { TabsPage } from '../pages/tabs-page/tabs-page';
-import { TutorialPage } from '../pages/tutorial/tutorial';
-import { SupportPage } from '../pages/support/support';
-
-import { ConferenceData } from '../providers/conference-data';
-import { UserData } from '../providers/user-data';
-
+export function provideSettings(storage: Storage) {
+  /**
+   * The Settings provider takes a set of default settings for your app.
+   *
+   * You can add new settings options at any time. Once the settings are saved,
+   * these values will not overwrite the saved values (this can be done manually if desired).
+   */
+  return new Settings(storage, {
+    option1: true,
+    option2: 'Ionitron J. Framework',
+    option3: '3',
+    option4: 'Hello'
+  });
+}
 
 @NgModule({
   declarations: [
-    ConferenceApp,
-    AboutPage,
-    AccountPage,
-    LoginPage,
-    MapPage,
-    PopoverPage,
-    SchedulePage,
-    ScheduleFilterPage,
-    SessionDetailPage,
-    SignupPage,
-    SpeakerDetailPage,
-    SpeakerListPage,
-    TabsPage,
-    TutorialPage,
-    SupportPage
+    MyApp
   ],
   imports: [
     BrowserModule,
-    HttpModule,
-    IonicModule.forRoot(ConferenceApp, {}, {
-      links: [
-        { component: TabsPage, name: 'TabsPage', segment: 'tabs-page' },
-        { component: SchedulePage, name: 'Schedule', segment: 'schedule' },
-        { component: SessionDetailPage, name: 'SessionDetail', segment: 'sessionDetail/:sessionId' },
-        { component: ScheduleFilterPage, name: 'ScheduleFilter', segment: 'scheduleFilter' },
-        { component: SpeakerListPage, name: 'SpeakerList', segment: 'speakerList' },
-        { component: SpeakerDetailPage, name: 'SpeakerDetail', segment: 'speakerDetail/:speakerId' },
-        { component: MapPage, name: 'Map', segment: 'map' },
-        { component: AboutPage, name: 'About', segment: 'about' },
-        { component: TutorialPage, name: 'Tutorial', segment: 'tutorial' },
-        { component: SupportPage, name: 'SupportPage', segment: 'support' },
-        { component: LoginPage, name: 'LoginPage', segment: 'login' },
-        { component: AccountPage, name: 'AccountPage', segment: 'account' },
-        { component: SignupPage, name: 'SignupPage', segment: 'signup' }
-      ]
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (createTranslateLoader),
+        deps: [HttpClient]
+      }
     }),
+    IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
-    ConferenceApp,
-    AboutPage,
-    AccountPage,
-    LoginPage,
-    MapPage,
-    PopoverPage,
-    SchedulePage,
-    ScheduleFilterPage,
-    SessionDetailPage,
-    SignupPage,
-    SpeakerDetailPage,
-    SpeakerListPage,
-    TabsPage,
-    TutorialPage,
-    SupportPage
+    MyApp
   ],
   providers: [
-    { provide: ErrorHandler, useClass: IonicErrorHandler },
-    ConferenceData,
-    UserData,
-    InAppBrowser,
-    SplashScreen
+    Api,
+    Items,
+    BlogApi,
+    User,
+    Camera,
+    SplashScreen,
+    StatusBar,
+    { provide: Settings, useFactory: provideSettings, deps: [Storage] },
+    // Keep this to enable Ionic's runtime error handling during development
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
 export class AppModule { }

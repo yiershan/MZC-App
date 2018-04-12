@@ -1,0 +1,18 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{ 'BLOG_TITLE' | translate }}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item-sliding *ngFor="let item of data.items">
+      <button ion-item (click)="openItem(item)">
+        <h2>{{item.title}}</h2>
+        <p>{{item.creationTime}}</p>
+      </button>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>
