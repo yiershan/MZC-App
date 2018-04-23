@@ -1,18 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Api } from '../api/api';
-import {Observable} from "rxjs/Observable";
-import {BlogListDto, BlogQuery} from "../../models/blog";
-export * from "../../models/blog";
+import {HttpClient} from '@angular/common/http';
+import {BlogApiService} from  "mzc-ng-api/src/provider"
+export * from "mzc-ng-api/src/provider"
 
 @Injectable()
-export class BlogApi {
-  url= {
-    list: 'NoteServer/GetNoteList'
-  };
-  constructor(public api: Api) { }
-
-  getBlogList(query: BlogQuery): Observable<BlogListDto> {
-    return this.api.get(this.url.list, query);
+export class BlogApi extends BlogApiService{
+  constructor(protected http: HttpClient) {
+    super(http)
   }
-
 }

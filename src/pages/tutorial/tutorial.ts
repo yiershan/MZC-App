@@ -3,7 +3,6 @@ import { IonicPage, MenuController, NavController, Platform } from 'ionic-angula
 import {Storage} from "@ionic/storage";
 import { TranslateService } from '@ngx-translate/core';
 import {MyConfig} from "../../providers/config/config";
-import {MainPage} from "../pages";
 
 export interface Slide {
   title: string;
@@ -63,7 +62,7 @@ export class TutorialPage {
   startApp() {
     // 结束观看，我们设置下已观看,key的名称需要每次修改后更改。
     this.storage.set(MyConfig.TUTORIAL_SHOW,true);
-    this.navCtrl.setRoot('MainPage', {}, {
+    this.navCtrl.setRoot('TabsPage', {}, {
       animate: true,
       direction: 'forward'
     });

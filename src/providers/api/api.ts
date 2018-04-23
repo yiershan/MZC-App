@@ -2,7 +2,6 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {MyConfig} from "../config/config";
 import {ResultDto} from "../../models/interface";
-import {Observable} from "rxjs/Observable";
 
 /**
  * Api is a generic REST Api handler. Set your API url first.

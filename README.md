@@ -1,33 +1,33 @@
-# The Ionic Super Starter 🎮
+# 手机端
 
-<img src="https://user-images.githubusercontent.com/236501/32385619-bddac0ac-c08c-11e7-9ee4-9c892197191f.png" width="400" />
+## 环境要求
 
-The Ionic Super Starter is a batteries-included starter project for Ionic apps
-complete with pre-built pages, providers, and best practices for Ionic
-development.
+## 使用
 
-The goal of the Super Starter is to get you from zero to app store faster than
-before, with a set of opinions from the Ionic team around page layout,
-data/user management, and project structure.
+> 浏览器运行
 
-The way to use this starter is to pick and choose the various page types you
-want use, and remove the ones you don't. If you want a blank slate, this
-starter isn't for you (use the `blank` type instead).
+```
+ionic serve
+```
 
-One of the big advances in Ionic was moving from a rigid route-based navigation
-system to a flexible push/pop navigation system modeled off common native SDKs.
-We've embraced this pattern to provide a set of reusable pages that can be
-navigated to anywhere in the app. Take a look at the [Settings
-page](https://github.com/ionic-team/starters/blob/master/ionic-angular/official/super/src/pages/settings/settings.html)
-for a cool example of a page navigating to itself to provide a different UI
-without duplicating code.
+> 生成apk
 
-## Table of Contents
+```
+ionic cordova build android --prod --release
+```
 
-1. [Getting Started](#getting-started)
-2. [Pages](#pages)
-3. [Providers](#providers)
-4. [i18n](#i18n) (adding languages)
+> 创建签名密钥
+
+如果没有签名的话
+```
+keytool -genkey -v -keystore 密钥名称 -alias 别名 -keyalg RSA -keysize 2048 -validity 10000
+
+```
+>  签名
+
+```
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore 密钥名称 apk的名称 别名
+```
 
 ## <a name="getting-started"></a>Getting Started
 

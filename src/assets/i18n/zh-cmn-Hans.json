@@ -21,10 +21,10 @@
   "TUTORIAL_SLIDE1_DESCRIPTION": "<b>不认识我？</b> 没关系，在这里你可以全方位了解本人，交友、合作、学习。传递正能量，我责无旁贷",
 
   "TUTORIAL_SLIDE2_TITLE": "博客",
-  "TUTORIAL_SLIDE2_DESCRIPTION": "使用你需要的多种多样的页面删除你不需要的页面。我们提供许多常见移动 app 页面，如登录、注册页面，tabs 标签页，以及本教程页面。",
+  "TUTORIAL_SLIDE2_DESCRIPTION": "在这里，你会看见有关我工作，生活相关的文章，这都是我生活和工作种点点积累",
 
   "TUTORIAL_SLIDE3_TITLE": "小应用",
-  "TUTORIAL_SLIDE3_DESCRIPTION": "需要帮助？查看 Super 入门教程的帮助文档，可获得完整教程。",
+  "TUTORIAL_SLIDE3_DESCRIPTION": "这里又我开发的一些小的应用程序，如记账，菜谱等。",
 
   "TUTORIAL_SLIDE4_TITLE": "已经迫不及待了？",
 
@@ -65,6 +65,7 @@
 
   "SEARCH_TITLE": "搜索",
   "SEARCH_PLACEHOLDER": "搜索项目列表, 比如：\"Donald Duck\"",
+  "LOAD_MORE": "加载更多",
 
 
   "BLOG_TITLE": "博客"

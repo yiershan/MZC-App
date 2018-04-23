@@ -1,18 +1,44 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>{{ 'BLOG_TITLE' | translate }}</ion-title>
+    <ion-searchbar (ionInput)="search($event)"></ion-searchbar>
   </ion-navbar>
 
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-item-sliding *ngFor="let item of data.items">
-      <button ion-item (click)="openItem(item)">
-        <h2>{{item.title}}</h2>
-        <p>{{item.creationTime}}</p>
-      </button>
-    </ion-item-sliding>
-  </ion-list>
+  <ion-card *ngFor="let item of data.items" (click)="go(item.id)">
+    <ion-item >
+      <h2>{{item.title}}</h2>
+      <p>{{item.creationTime}}</p>
+    </ion-item>
+    <ng-template *ngIf="item.isPublic">
+      <img src="img/advance-card-bttf.png">
+    </ng-template>
+    <ion-card-content>
+      <p>Wait a minute. Wait a minute, Doc. Uhhh... Are you telling me that you built a time machine... out of a DeLorean?! Whoa. This is heavy.</p>
+    </ion-card-content>
+    <ion-row>
+      <ion-col>
+        <button ion-button icon-left clear small>
+          <ion-icon name="thumbs-up"></ion-icon>
+          <div>{{item.like}}</div>
+        </button>
+      </ion-col>
+      <ion-col>
+        <button ion-button icon-left clear small>
+          <ion-icon name="md-eye"></ion-icon>
+          <div>{{item.scan}}</div>
+        </button>
+      </ion-col>
+      <ion-col>
+      </ion-col>
+      <ion-col>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+
+  <ion-item *ngIf="showMore" onclick="load()">
+    <ion-label>{{ 'LOAD_MORE' | translate }}</ion-label>
+  </ion-item>
 </ion-content>

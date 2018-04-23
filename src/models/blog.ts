@@ -6,7 +6,16 @@ export class BlogListDto {
     this.totalCount = 0;
   }
 }
-
+export class PreNoteDto{
+  id:number;
+  title:string;
+  creationTime:string;
+  like:number;
+  collect:number;
+  scan:number;
+  isPublic:boolean;
+  content:string;
+}
 export class BlogQuery {
   key: string;
   skipCount: number;
