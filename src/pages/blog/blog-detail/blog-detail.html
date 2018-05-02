@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{ article.title}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content>
+  <h1>{{ article.title}}</h1>
+  <div class="note-btn">
+    <div>
+      <em>{{article.creationTime}}</em>
+      <i class="anticon anticon-eye"></i>{{article.scan}}
+      <i class="anticon anticon-heart"></i> {{article.like}}
+    </div>
+  </div>
+  <article [innerHTML]="article.content">
+
+  </article>
+  <div style="margin: auto;padding: 50px 10px;">
+    <div class="like" [ngClass]="{'liked':_like}" (click)="ILike()">
+      <i class="anticon anticon-heart-o"></i>喜欢 | {{article.like}}
+    </div>
+  </div>
+</ion-content>

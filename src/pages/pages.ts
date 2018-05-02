@@ -10,3 +10,4 @@ export const Tab1Root = 'BlogPage';
 export const Tab2Root = 'MyAppPage';
 export const Tab3Root = 'ContactPage';
 export const BlogDetailPage ='BlogDetailPage';
+export const ContactMorePage ='ContactMorePage';

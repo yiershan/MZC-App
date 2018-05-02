@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavParams } from 'ionic-angular';
 import {BlogApi, PreNoteDto} from "../../../providers/blog/blog-api";
+import marked from 'marked';
 
 @IonicPage()
 @Component({
-  templateUrl: 'index.html'
+  templateUrl: 'blog-detail.html'
 })
 
 export class BlogDetailPage {
@@ -22,6 +23,7 @@ export class BlogDetailPage {
   load() {
     this.api.GetNote(this.id).subscribe(r => {
       this.article = r;
+      this.article.content = marked(r.content);
     });
   }
 

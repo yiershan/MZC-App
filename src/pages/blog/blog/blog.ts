@@ -33,11 +33,10 @@ export class BlogPage {
     this.api.GetNoteList(this.query).subscribe(r => {
       this.data.items.push(...r.items);
       this.data.totalCount = r.totalCount;
-      console.log(this.data);
       loading.dismiss();
-    }, () => {
+    }, (e) => {
       loading.dismiss();
-      console.log(this.data);
+      console.log(e);
     })
   }
   search(ev) {

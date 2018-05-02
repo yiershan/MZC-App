@@ -2,18 +2,19 @@ import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { IonicPageModule } from 'ionic-angular';
 
-import {ContactPage} from "./contact";
+import {BlogDetailPage} from "./blog-detail";
+
 @NgModule({
   declarations: [
-    ContactPage,
+    BlogDetailPage
   ],
   imports: [
-    IonicPageModule.forChild(ContactPage),
+    IonicPageModule.forChild(BlogDetailPage),
     TranslateModule.forChild()
   ],
   exports: [
-    ContactPage
+    BlogDetailPage
   ]
 })
 
-export class MyContactModule{}
+export class BlogDetailModule{}

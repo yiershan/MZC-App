@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage } from 'ionic-angular';
-import { Nav } from 'ionic-angular';
+import {IonicPage, NavController} from 'ionic-angular';
+import {GroupItem,Item} from "../../models/contact";
+import {ContactMorePage} from "../pages";
+
 @IonicPage()
 @Component({
   templateUrl: 'contact.html'
@@ -15,25 +17,21 @@ export class ContactPage{
         {name:"我的自传", url:""},
         {name:"留言", url:""},
       ]},
-    {name: '联系方式',
+    {name: '更多内容',
       items:[
-        {name:"菜谱", url:""},
-        {name:"生活", url:""}
+        {name:"简书", url:"https://www.jianshu.com/u/8afb7e623b70"},
+        {name:"segmentfault", url:""},
+        {name:"csdn", url:""},
+        {name:"github", url:""}
       ]},
   ];
 
-  constructor(
-    public nav: Nav,
+  constructor(public navCtrl: NavController
   ) { }
   itemSelected(item:Item){
-    this.nav.setRoot(item.url);
+    this.navCtrl.push(ContactMorePage, {
+      name: item.name,
+      url: item.url
+    });
   }
-}
-export class GroupItem{
-  name:string;
-  items:Item[];
-}
-export  class Item{
-  name:string;
-  url:any;
 }

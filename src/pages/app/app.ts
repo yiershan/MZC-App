@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage } from 'ionic-angular';
 import { Nav } from 'ionic-angular';
+import {GroupItem, Item} from "../../models/contact";
+
 @IonicPage()
 @Component({
   templateUrl: 'app.html'
@@ -11,6 +13,8 @@ export class MyAppPage{
       items:[
         {name:"记账", url:''},
         {name:"时间账单", url:""},
+        {name:"电影抢先看", url:""},
+        {name:"音乐", url:""},
         {name:"测试", url:""}
       ]},
     {name: '文章',
@@ -30,12 +34,4 @@ export class MyAppPage{
   itemSelected(item:Item){
     this.nav.setRoot(item.url);
   }
-}
-export class GroupItem{
-  name:string;
-  items:Item[];
-}
-export  class Item{
-  name:string;
-  url:any;
 }
