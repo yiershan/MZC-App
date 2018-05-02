@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import {IonicPage, NavController} from 'ionic-angular';
+import {IonicPage} from 'ionic-angular';
 import {GroupItem,Item} from "../../models/contact";
-import {ContactMorePage} from "../pages";
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 @IonicPage()
 @Component({
@@ -20,18 +20,24 @@ export class ContactPage{
     {name: '更多内容',
       items:[
         {name:"简书", url:"https://www.jianshu.com/u/8afb7e623b70"},
-        {name:"segmentfault", url:""},
-        {name:"csdn", url:""},
-        {name:"github", url:""}
+        {name:"segmentfault", url:"https://segmentfault.com/u/yiqrshan"},
+        {name:"csdn", url:"https://blog.csdn.net/yiershan1314"},
+        {name:"github", url:"https://github.com/yiershan"}
       ]},
   ];
 
-  constructor(public navCtrl: NavController
+  constructor(private iab: InAppBrowser
   ) { }
   itemSelected(item:Item){
-    this.navCtrl.push(ContactMorePage, {
-      name: item.name,
-      url: item.url
-    });
+    const browser = this.iab.create(item.url,'_self');
+    browser.show();
+   // browser.executeScript(...);
+
+   // browser.insertCSS(...);
+   //  browser.on('loadstop').subscribe(event => {
+   //    browser.insertCSS({ code: "body{color: red;" });
+   //  });
+
+   // browser.close();
   }
 }
